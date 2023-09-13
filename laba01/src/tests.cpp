@@ -5,9 +5,13 @@ class VowelRemovalTest : public testing::TestWithParam<std::tuple<std::string, s
 };
 
 TEST_P(VowelRemovalTest, TestVowelRemoval) {
+    // Arrange
     std::string input, expectedOutput;
     std::tie(input, expectedOutput) = GetParam();
-    ASSERT_EQ(removeVowels(input), expectedOutput);
+    // Act
+    std::string result = removeVowels(input);
+    // Assert
+    ASSERT_EQ(result, expectedOutput);
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -29,10 +33,14 @@ class VowelCheckTest : public testing::TestWithParam<std::tuple<char, bool>> {
 };
 
 TEST_P(VowelCheckTest, TestIsVowel) {
+    // Arrange
     char inputChar;
     bool expectedValue;
     std::tie(inputChar, expectedValue) = GetParam();
-    ASSERT_EQ(isVowel(inputChar), expectedValue);
+    // Act
+    bool result = isVowel(inputChar);
+    // Assert
+    ASSERT_EQ(result, expectedValue);
 }
 
 INSTANTIATE_TEST_SUITE_P(
