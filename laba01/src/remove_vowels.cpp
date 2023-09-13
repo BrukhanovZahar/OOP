@@ -1,17 +1,17 @@
 #include "remove_vowels.h"
 
-bool isVowel(char c) {
-    return (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'y' ||
-            c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' || c == 'Y'
+bool isVowel(char letter) {
+    return (letter == 'a' || letter == 'e' || letter == 'i' || letter == 'o' || letter == 'u' || letter == 'y' ||
+            letter == 'A' || letter == 'E' || letter == 'I' || letter == 'O' || letter == 'U' || letter == 'Y'
     );
 }
 
-string removeVowels(const string& input) {
-    string result;
-    for (const char c: input) {
-        if (!isVowel(c)) {
-            result += c;
+string removeVowels(const string& source_string) {
+    string result_string;
+    for (const char letter: source_string) {
+        if (!isVowel(letter)) {
+            result_string += letter;
         }
     }
-    return result;
+    return result_string;
 }

@@ -4,5 +4,5 @@
 
 using namespace std;
 
-bool isVowel(char c);
-string removeVowels(const string &input);
+bool isVowel(char letter);
+string removeVowels(const string& source_string);
