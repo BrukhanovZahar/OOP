@@ -13,18 +13,6 @@ add_custom_target(clean_all
         COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_BINARY_DIR}/*
 )
 
-add_custom_target(info
-        COMMAND ${CMAKE_COMMAND} -DMORE_INFORMATION=ON .
-        COMMAND make
-        COMMAND ${CMAKE_COMMAND} -DMORE_INFORMATION=OFF .
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        COMMENT "Building with MORE_INFORMATION flag"
-)
-
-if(MORE_INFORMATION)
-    target_compile_definitions(task01 PRIVATE MORE_INFORMATION)
-endif()
-
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
