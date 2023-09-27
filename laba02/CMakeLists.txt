@@ -1,12 +1,17 @@
 cmake_minimum_required(VERSION 3.25)
-project(first_laba)
+project(lab_02)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra")
 
-add_executable(task01 src/main.cpp src/remove_vowels.cpp)
-add_executable(tests src/tests.cpp src/remove_vowels.cpp)
+#add_executable(task01 src/main.cpp src/remove_vowels.cpp)
+#add_executable(tests src/tests.cpp src/remove_vowels.cpp)
+
+#set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+#set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+#
+#include_directories(${INCLUDE_DIR})
 
 add_custom_target(clean_all
         COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/*
