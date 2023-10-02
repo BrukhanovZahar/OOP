@@ -6,25 +6,31 @@ Five::Five() : _size{0}, _array{nullptr} {
 
 Five::Five(const size_t &n, unsigned char t) : _size{n}, _array{new unsigned char[_size]} {
     std::cout << "Fill constructor" << std::endl;
-    // TODO : сделать проверку что числа меньше 5
-    for (size_t i = 0; i < _size; ++i) {
+    if (!isValidChar(t)) {
+        throw std::invalid_argument("The class accepts fivefold numbers, between 0-4");
+    }
+    for (size_t i{0}; i < _size; ++i) {
         _array[i] = t;
     }
 }
 
 Five::Five(const std::initializer_list<unsigned char> &t) : _size{t.size()}, _array{new unsigned char[_size]} {
     std::cout << "Initializer list constructor" << std::endl;
-    // TODO : сделать проверку что числа меньше 5
     size_t i{0};
     for (auto c: t) {
+        if (!isValidChar(c)) {
+            throw std::invalid_argument("The class accepts fivefold numbers, between 0-4");
+        }
         _array[i++] = c;
     }
 }
 
 Five::Five(const std::string &t) : _size{t.size()}, _array{new unsigned char[_size]} {
     std::cout << "Copy string constructor" << std::endl;
-    // TODO : сделать проверку что числа меньше 5
     for (size_t i{0}; i < _size; ++i) {
+        if (!isValidChar(t[i])) {
+            throw std::invalid_argument("The class accepts fivefold numbers, between 0-4");
+        }
         _array[i] = static_cast<unsigned char>(t[i]);
     }
 }
@@ -32,6 +38,9 @@ Five::Five(const std::string &t) : _size{t.size()}, _array{new unsigned char[_si
 Five::Five(const Five &other) : _size{other._size}, _array{new unsigned char[other._size]} {
     std::cout << "Copy constructor" << std::endl;
     for (size_t i{0}; i < _size; ++i) {
+        if (!isValidChar(other._array[i])) {
+            throw std::invalid_argument("The class accepts fivefold numbers, between 0-4");
+        }
         _array[i] = other._array[i];
     }
 }
@@ -42,29 +51,46 @@ Five::Five(Five &&other) noexcept: _size{other._size}, _array{other._array} {
     other._array = nullptr;
 }
 
-bool Five::isValidChar(const char c) {
+bool Five::isValidChar(const unsigned char c) {
     return (c >= '0' && c <= '4');
 }
 
 Five Five::operator+(const Five &other) const {
     Five result(_size);
-    // TODO : сделать нормальный переход разрядов
-    for (size_t i{0}; i < _size; ++i) {
-        result._array[i] = (_array[i] + other._array[i]) % 5;
+    unsigned char carry{0};
+    for (long long i = (long long) _size - 1; i >= 0; --i) {
+        unsigned char sum = _array[i] + other._array[i] + carry;
+        result._array[i] = sum % 5;
+        carry = sum / 5;
     }
-
+    if (carry > 0) {
+        result._size++;
+        auto * new_array = new unsigned char[result._size];
+        new_array[0] = carry;
+        for (size_t i = 0; i < _size; ++i) {
+            new_array[i + 1] = result._array[i];
+        }
+        delete[] result._array;
+        result._array = new_array;
+    }
     return result;
 }
 
 Five Five::operator-(const Five &other) const {
-    // TODO : учесть что левое число больше правого (по заданию нет отрицательных чисел и проверить работу перехода разрядов
     Five result(_size);
-    for (size_t i{0}; i < _size; ++i) {
-        if (_array[i] < other._array[i]) {
-            result._array[i] = 5 + _array[i] - other._array[i];
+    unsigned char borrow = 0;
+    for (long long i = (long long) _size - 1; i >= 0; --i) {
+        unsigned char diff = _array[i] - other._array[i] - borrow;
+        if (diff > _array[i]) {
+            borrow = 1;
+            diff += 5;
         } else {
-            result._array[i] = _array[i] - other._array[i];
+            borrow = 0;
         }
+        result._array[i] = diff;
+    }
+    if (borrow > 0) {
+        throw std::underflow_error("Numbers can only be positive, you can't subtract more from less");
     }
     return result;
 }

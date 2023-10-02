@@ -42,5 +42,5 @@ private:
     size_t _size;
     unsigned char *_array;
 
-    static bool isValidChar(const char c);
+    static bool isValidChar(unsigned char c);
 };
