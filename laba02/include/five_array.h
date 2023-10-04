@@ -12,7 +12,7 @@ public:
 
     Five();
 
-    Five(const size_t &n, unsigned char t = 0);
+    Five(const size_t &n, unsigned char t = '0');
 
     Five(const std::initializer_list<unsigned char> &t);
 
@@ -63,5 +63,5 @@ public:
 private:
     size_t _size;
     size_t _currentIndex = 0;
-    unsigned char* _values;
+    unsigned char* _values = nullptr;
 };

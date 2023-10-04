@@ -56,38 +56,63 @@ bool Five::isValidChar(const unsigned char c) {
 }
 
 Five Five::operator+(const Five &other) const {
-    Five result(_size);
+    long long sz;
+    long long raz;
+    const Five* min = other._size > _size ? this : &other;
+    const Five* max = other._size > _size ? &other : this;
+
+    if (_size > other._size) {
+        sz = _size;
+        raz = _size - other._size;
+    } else {
+        sz = other._size;
+        raz = other._size - _size;
+    }
+
+    Five result(sz);
     unsigned char carry{0};
-    for (long long i = (long long) _size - 1; i >= 0; --i) {
-        unsigned char sum = _array[i] + other._array[i] + carry;
-        result._array[i] = sum % 5;
+
+    for (long long i = (long long) result._size - 1; i >= 0; --i) {
+        unsigned char sum = (i - raz >= 0 ? min->_array[i - raz] : '0') - '0' + max->_array[i] - '0' + carry;
+        result._array[i] = (sum % 5) + '0';
         carry = sum / 5;
     }
+
     if (carry > 0) {
         result._size++;
         auto* new_array = new unsigned char[result._size];
         new_array[0] = carry;
-        for (size_t i = 0; i < _size; ++i) {
+
+        for (size_t i = 0; i < result._size - 1; ++i) {
             new_array[i + 1] = result._array[i];
         }
+
         delete[] result._array;
         result._array = new_array;
     }
+
     return result;
 }
 
 Five Five::operator-(const Five &other) const {
+    if (_size < other._size) {
+        throw std::underflow_error("Numbers can only be positive, you can't subtract more from less");
+    }
+
+    long long raz = _size - other._size;
     Five result(_size);
-    unsigned char borrow = 0;
+    long long borrow{0};
+
     for (long long i = (long long) _size - 1; i >= 0; --i) {
-        unsigned char diff = _array[i] - other._array[i] - borrow;
+        unsigned char diff = (_array[i] - '0') - ((i - raz >= 0 ? other._array[i - raz] : '0') - '0') - borrow;
+
         if (diff > _array[i]) {
             borrow = 1;
             diff += 5;
         } else {
             borrow = 0;
         }
-        result._array[i] = diff;
+        result._array[i] = diff + '0';
     }
     if (borrow > 0) {
         throw std::underflow_error("Numbers can only be positive, you can't subtract more from less");
@@ -159,7 +184,7 @@ Five &Five::operator=(const Five &other) {
 
 std::ostream &operator<<(std::ostream &os, const Five &five) {
     for (size_t i{0}; i < five._size; ++i) {
-        os << static_cast<int>(five._array[i]);
+        os << five._array[i];
     }
     return os;
 }
@@ -171,12 +196,11 @@ void Five::serialize(const std::string &filename) const {
         throw std::runtime_error("Unable to open file for serialization");
     }
 
+    outFile << "{size: " << _size << ", number: ";
     for (size_t i{0}; i < _size; ++i) {
-        if (i > 0) {
-            outFile << ' ';
-        }
-        outFile << "{size: " << _size << ", number: " << static_cast<int>(_array[i]) << '}';
+        outFile << _array[i];
     }
+    outFile << '}';
 
     outFile.close();
 }
@@ -201,16 +225,19 @@ void Five::deserialize(const std::string &filename) {
         throw std::runtime_error("Invalid size in the file");
     }
 
+    delete[] _array;
+    _array = new unsigned char[_size];
+
     inFile.ignore(std::numeric_limits<std::streamsize>::max(), ':');
     for (size_t i = 0; i < _size; ++i) {
-        int value;
+        char value;
         inFile >> value;
 
-        if (isValidChar(value)) {
+        if (!isValidChar(value)) {
             throw std::runtime_error("Invalid pental digit");
         }
 
-        _array[i] = static_cast<unsigned char>(value);
+        _array[i] = value;
     }
 
     // Чтение завершающей скобки
@@ -250,14 +277,26 @@ Five::Builder &Five::Builder::addValue(unsigned char value) {
     if (!_values) {
         throw std::logic_error("Array is not initialized");
     }
+    if (_currentIndex + 1 > _size) {
+        throw std::runtime_error("Excessive addition of elements in the builder");
+    }
     _values[_currentIndex++] = value;
     return *this;
 }
 
 Five Five::Builder::build() const {
-    Five five(_size, *_values);
-    delete[] _values;
-    return five;
+    if (!_values && !_size) {
+        throw std::runtime_error("Five is not create");
+    }
+    if (_values == nullptr) {
+        return Five(_size, '0');
+    } else {
+        std::string tmp = "";
+        for (size_t i{0}; i < _size && _values[i] != '\0'; ++i) {
+            tmp += _values[i];
+        }
+        return Five(tmp);
+    }
 }
 
 Five::Builder::~Builder() {
