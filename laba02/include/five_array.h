@@ -3,10 +3,12 @@
 #include <string>
 #include <iostream>
 #include <stdexcept>
+#include <fstream>
 
 class Five {
 
 public:
+    class Builder;
 
     Five();
 
@@ -35,12 +37,31 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const Five &five);
 
+    void serialize(const std::string &filename) const;
+
+    void deserialize(const std::string &filename);
+
+    static Builder createBuilder();
+
     virtual ~Five() noexcept;
 
 private:
-
     size_t _size;
-    unsigned char *_array;
+    unsigned char* _array;
 
     static bool isValidChar(unsigned char c);
+};
+
+class Five::Builder {
+public:
+    Builder();
+    Builder &size(size_t size);
+    Builder &addValue(unsigned char value);
+    Five build() const;
+    ~Builder();
+
+private:
+    size_t _size;
+    size_t _currentIndex = 0;
+    unsigned char* _values;
 };
