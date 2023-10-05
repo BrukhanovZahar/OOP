@@ -50,14 +50,20 @@ private:
     unsigned char* _array;
 
     static bool isValidChar(unsigned char c);
+
+    void removeLeadingZeros();
 };
 
 class Five::Builder {
 public:
     Builder();
+
     Builder &size(size_t size);
+
     Builder &addValue(unsigned char value);
+
     Five build() const;
+
     ~Builder();
 
 private:

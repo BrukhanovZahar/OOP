@@ -12,6 +12,7 @@ Five::Five(const size_t &n, unsigned char t) : _size{n}, _array{new unsigned cha
     for (size_t i{0}; i < _size; ++i) {
         _array[i] = t;
     }
+    removeLeadingZeros();
 }
 
 Five::Five(const std::initializer_list<unsigned char> &t) : _size{t.size()}, _array{new unsigned char[_size]} {
@@ -23,6 +24,7 @@ Five::Five(const std::initializer_list<unsigned char> &t) : _size{t.size()}, _ar
         }
         _array[i++] = c;
     }
+    removeLeadingZeros();
 }
 
 Five::Five(const std::string &t) : _size{t.size()}, _array{new unsigned char[_size]} {
@@ -33,6 +35,7 @@ Five::Five(const std::string &t) : _size{t.size()}, _array{new unsigned char[_si
         }
         _array[i] = static_cast<unsigned char>(t[i]);
     }
+    removeLeadingZeros();
 }
 
 Five::Five(const Five &other) : _size{other._size}, _array{new unsigned char[other._size]} {
@@ -43,6 +46,7 @@ Five::Five(const Five &other) : _size{other._size}, _array{new unsigned char[oth
         }
         _array[i] = other._array[i];
     }
+    removeLeadingZeros();
 }
 
 Five::Five(Five &&other) noexcept: _size{other._size}, _array{other._array} {
@@ -54,6 +58,33 @@ Five::Five(Five &&other) noexcept: _size{other._size}, _array{other._array} {
 bool Five::isValidChar(const unsigned char c) {
     return (c >= '0' && c <= '4');
 }
+
+void Five::removeLeadingZeros() {
+    size_t nonZeroIndex{0};
+
+    while (nonZeroIndex < _size && _array[nonZeroIndex] == '0') {
+        nonZeroIndex++;
+    }
+
+    if (nonZeroIndex == _size) {
+        _size = 1;
+        delete[] _array;
+        _array = new unsigned char[1];
+        _array[0] = '0';
+    } else if (nonZeroIndex > 0) {
+        size_t newSize = _size - nonZeroIndex;
+        auto* newArray = new unsigned char[newSize];
+
+        for (size_t i{0}; i < newSize; ++i) {
+            newArray[i] = _array[i + nonZeroIndex];
+        }
+        delete[] _array;
+        _array = newArray;
+        _size = newSize;
+    }
+
+}
+
 
 Five Five::operator+(const Five &other) const {
     long long sz;
@@ -71,6 +102,7 @@ Five Five::operator+(const Five &other) const {
 
     Five result(sz);
     unsigned char carry{0};
+    result._size = sz;
 
     for (long long i = (long long) result._size - 1; i >= 0; --i) {
         unsigned char sum = (i - raz >= 0 ? min->_array[i - raz] : '0') - '0' + max->_array[i] - '0' + carry;
@@ -81,7 +113,7 @@ Five Five::operator+(const Five &other) const {
     if (carry > 0) {
         result._size++;
         auto* new_array = new unsigned char[result._size];
-        new_array[0] = carry;
+        new_array[0] = carry + '0';
 
         for (size_t i = 0; i < result._size - 1; ++i) {
             new_array[i + 1] = result._array[i];
@@ -90,7 +122,7 @@ Five Five::operator+(const Five &other) const {
         delete[] result._array;
         result._array = new_array;
     }
-
+    result.removeLeadingZeros();
     return result;
 }
 
@@ -102,6 +134,7 @@ Five Five::operator-(const Five &other) const {
     long long raz = _size - other._size;
     Five result(_size);
     long long borrow{0};
+    result._size = _size;
 
     for (long long i = (long long) _size - 1; i >= 0; --i) {
         unsigned char diff = (_array[i] - '0') - ((i - raz >= 0 ? other._array[i - raz] : '0') - '0') - borrow;
@@ -117,6 +150,8 @@ Five Five::operator-(const Five &other) const {
     if (borrow > 0) {
         throw std::underflow_error("Numbers can only be positive, you can't subtract more from less");
     }
+
+    result.removeLeadingZeros();
     return result;
 }
 
@@ -179,6 +214,7 @@ Five &Five::operator=(const Five &other) {
             _array[i] = other._array[i];
         }
     }
+    this->removeLeadingZeros();
     return *this;
 }
 
@@ -246,7 +282,7 @@ void Five::deserialize(const std::string &filename) {
         throw std::runtime_error("Invalid format in the file");
     }
 
-
+    removeLeadingZeros();
     inFile.close();
 }
 
@@ -255,6 +291,7 @@ Five::Builder Five::createBuilder() {
 }
 
 Five::~Five() noexcept {
+    std::cout << "destructor" << std::endl;
     if (_size > 0) {
         _size = 0;
         delete[] _array;
