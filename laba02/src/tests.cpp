@@ -14,7 +14,7 @@ TEST_P(FiveAdditionTest, TestAddition) {
 
     Five result = five1 + five2;
 
-    ASSERT_EQ(result.toString(), expectedOutput);
+    ASSERT_EQ(result, expectedOutput);
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -88,6 +88,94 @@ INSTANTIATE_TEST_SUITE_P(
         )
 );
 
+TEST(FiveConstructorTest, TestInitializerBuildConstructor) {
+    Five five1, five2;
+
+    five1 = Five::createBuilder().size(3).addValue('1').addValue('2').addValue('3').build();
+    five2 = Five::createBuilder().size(3).build();
+
+    EXPECT_EQ(five1.getValue(), "123");
+    EXPECT_EQ(five1.getSize(), (size_t) 3);
+    EXPECT_EQ(five2.getValue(), "0");
+    EXPECT_EQ(five2.getSize(), (size_t) 1);
+}
+
+TEST(FiveConstructorTest, TestInitializerFillConstructor) {
+    Five five1;
+
+    five1 = Five::createBuilder().size(5).addValue('4').addValue('4').addValue('4').addValue('4').addValue('4').build();
+    Five five2(5, '4');
+
+    EXPECT_EQ(five1.getValue(), five2.getValue());
+    EXPECT_EQ(five1.getSize(), five2.getSize());
+}
+
+TEST(FiveConstructorTest, TestInitializerListConstructor) {
+    Five five1;
+
+    five1 = Five::createBuilder().size(3).addValue('1').addValue('2').addValue('3').build();
+    Five five2 = {'1', '2', '3'};
+
+    EXPECT_EQ(five1.getValue(), five2.getValue());
+    EXPECT_EQ(five1.getSize(), five2.getSize());
+}
+
+TEST(FiveConstructorTest, TestInitializerStringConstructor) {
+    Five five1;
+
+    five1 = Five::createBuilder().size(3).addValue('1').addValue('2').addValue('3').build();
+    Five five2 ("123");
+
+    EXPECT_EQ(five1.getValue(), five2.getValue());
+    EXPECT_EQ(five1.getSize(), five2.getSize());
+}
+
+TEST(FiveConstructorTest, TestInitializerCopyConstructor) {
+    Five five1;
+
+    five1 = Five::createBuilder().size(3).addValue('1').addValue('2').addValue('3').build();
+    Five five2 (five1);
+
+    EXPECT_EQ(five1.getValue(), five2.getValue());
+    EXPECT_EQ(five1.getSize(), five2.getSize());
+}
+
+TEST(FiveConstructorTest, TestInitializerMoveConstructor) {
+    Five five1;
+
+    five1 = Five::createBuilder().size(3).addValue('1').addValue('2').addValue('3').build();
+    Five five3("123");
+    Five five2 (std::move(five3));
+
+    EXPECT_EQ(five1.getValue(), five2.getValue());
+    EXPECT_EQ(five1.getSize(), five2.getSize());
+}
+
+TEST(FiveConstructorTest, TestCreateBuilderWithoutSize) {
+    Five five;
+
+    ASSERT_THROW({
+                     five = Five::createBuilder().addValue('1').build();
+                 }, std::logic_error);
+}
+
+TEST(FiveConstructorTest, TestInitializerFillConstructorWithExeption) {
+    ASSERT_THROW({
+                     Five five(3, 1);
+                 }, std::invalid_argument);
+}
+
+TEST(FiveConstructorTest, TestInitializerListConstructorWithExeption) {
+    ASSERT_THROW({
+                     Five five({1, 2, 3});
+                 }, std::invalid_argument);
+}
+
+TEST(FiveConstructorTest, TestInitializerStringConstructorWithExeption) {
+    ASSERT_THROW({
+                     Five five("012345");
+                 }, std::invalid_argument);
+}
 
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);

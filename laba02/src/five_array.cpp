@@ -4,7 +4,7 @@ Five::Five() : _size{0}, _array{nullptr} {
     std::cout << "Default constructor" << std::endl;
 }
 
-Five::Five(const size_t &n, unsigned char t) : _size{n}, _array{new unsigned char[_size]} {
+Five::Five(const size_t& n, unsigned char t) : _size{n}, _array{new unsigned char[_size]} {
     std::cout << "Fill constructor" << std::endl;
     if (!isValidChar(t)) {
         throw std::invalid_argument("The class accepts fivefold numbers, between 0-4");
@@ -15,7 +15,7 @@ Five::Five(const size_t &n, unsigned char t) : _size{n}, _array{new unsigned cha
     removeLeadingZeros();
 }
 
-Five::Five(const std::initializer_list<unsigned char> &t) : _size{t.size()}, _array{new unsigned char[_size]} {
+Five::Five(const std::initializer_list<unsigned char>& t) : _size{t.size()}, _array{new unsigned char[_size]} {
     std::cout << "Initializer list constructor" << std::endl;
     size_t i{0};
     for (auto c: t) {
@@ -27,18 +27,18 @@ Five::Five(const std::initializer_list<unsigned char> &t) : _size{t.size()}, _ar
     removeLeadingZeros();
 }
 
-Five::Five(const std::string &t) : _size{t.size()}, _array{new unsigned char[_size]} {
+Five::Five(const std::string& t) : _size{t.size()}, _array{new unsigned char[_size]} {
     std::cout << "Copy string constructor" << std::endl;
     for (size_t i{0}; i < _size; ++i) {
         if (!isValidChar(t[i])) {
             throw std::invalid_argument("The class accepts fivefold numbers, between 0-4");
         }
-        _array[i] = static_cast<unsigned char>(t[i]);
+        _array[i] = t[i];
     }
     removeLeadingZeros();
 }
 
-Five::Five(const Five &other) : _size{other._size}, _array{new unsigned char[other._size]} {
+Five::Five(const Five& other) : _size{other._size}, _array{new unsigned char[other._size]} {
     std::cout << "Copy constructor" << std::endl;
     for (size_t i{0}; i < _size; ++i) {
         if (!isValidChar(other._array[i])) {
@@ -49,7 +49,7 @@ Five::Five(const Five &other) : _size{other._size}, _array{new unsigned char[oth
     removeLeadingZeros();
 }
 
-Five::Five(Five &&other) noexcept: _size{other._size}, _array{other._array} {
+Five::Five(Five&& other) noexcept: _size{other._size}, _array{other._array} {
     std::cout << "Move constructor" << std::endl;
     other._size = 0;
     other._array = nullptr;
@@ -58,6 +58,19 @@ Five::Five(Five &&other) noexcept: _size{other._size}, _array{other._array} {
 bool Five::isValidChar(const unsigned char c) {
     return (c >= '0' && c <= '4');
 }
+
+size_t Five::getSize() const {
+    return _size;
+}
+
+std::string Five::getValue() const {
+    std::string result;
+    for (size_t i{0}; i < _size; i++) {
+        result += _array[i];
+    }
+    return result;
+}
+
 
 void Five::removeLeadingZeros() {
     size_t nonZeroIndex{0};
@@ -85,27 +98,25 @@ void Five::removeLeadingZeros() {
 
 }
 
+unsigned char Five::convertChar(const unsigned char c) {
+    return c - '0';
+}
 
-Five Five::operator+(const Five &other) const {
+Five Five::operator+(const Five& other) const {
     long long sz;
     long long raz;
     const Five* min = other._size > _size ? this : &other;
     const Five* max = other._size > _size ? &other : this;
 
-    if (_size > other._size) {
-        sz = _size;
-        raz = _size - other._size;
-    } else {
-        sz = other._size;
-        raz = other._size - _size;
-    }
+    sz = _size > other._size ? _size : other._size;
+    raz = _size > other._size ? raz = _size - other._size : other._size - _size;
 
     Five result(sz);
     unsigned char carry{0};
     result._size = sz;
 
     for (long long i = (long long) result._size - 1; i >= 0; --i) {
-        unsigned char sum = (i - raz >= 0 ? min->_array[i - raz] : '0') - '0' + max->_array[i] - '0' + carry;
+        unsigned char sum = convertChar(i - raz >= 0 ? min->_array[i - raz] : '0') + convertChar(max->_array[i]) + carry;
         result._array[i] = (sum % 5) + '0';
         carry = sum / 5;
     }
@@ -126,7 +137,7 @@ Five Five::operator+(const Five &other) const {
     return result;
 }
 
-Five Five::operator-(const Five &other) const {
+Five Five::operator-(const Five& other) const {
     if (_size < other._size) {
         throw std::underflow_error("Numbers can only be positive, you can't subtract more from less");
     }
@@ -137,7 +148,13 @@ Five Five::operator-(const Five &other) const {
     result._size = _size;
 
     for (long long i = (long long) _size - 1; i >= 0; --i) {
-        unsigned char diff = (_array[i] - '0') - ((i - raz >= 0 ? other._array[i - raz] : '0') - '0') - borrow;
+        unsigned char diff;
+        if (i - raz >= 0) {
+            diff = (convertChar(_array[i]) - (convertChar(other._array[i - raz]))) - borrow;
+        } else {
+            diff = (convertChar(_array[i])) - (convertChar('0')) - borrow;
+
+        }
 
         if (diff > _array[i]) {
             borrow = 1;
@@ -155,7 +172,7 @@ Five Five::operator-(const Five &other) const {
     return result;
 }
 
-bool Five::operator<(const Five &other) const {
+bool Five::operator<(const Five& other) const {
     if (_size > other._size) {
         return false;
     } else if (_size < other._size) {
@@ -173,7 +190,7 @@ bool Five::operator<(const Five &other) const {
     return false;
 }
 
-bool Five::operator>(const Five &other) const {
+bool Five::operator>(const Five& other) const {
     if (_size > other._size) {
         return true;
     } else if (_size < other._size) {
@@ -191,7 +208,7 @@ bool Five::operator>(const Five &other) const {
     return false;
 }
 
-bool Five::operator==(const Five &other) const {
+bool Five::operator==(const Five& other) const {
     if (_size != other._size) {
         return false;
     }
@@ -205,7 +222,7 @@ bool Five::operator==(const Five &other) const {
     return true;
 }
 
-Five &Five::operator=(const Five &other) {
+Five& Five::operator=(const Five& other) {
     if (this != &other) {
         delete[] _array;
         _size = other._size;
@@ -218,14 +235,14 @@ Five &Five::operator=(const Five &other) {
     return *this;
 }
 
-std::ostream &operator<<(std::ostream &os, const Five &five) {
+std::ostream& operator<<(std::ostream& os, const Five& five) {
     for (size_t i{0}; i < five._size; ++i) {
         os << five._array[i];
     }
     return os;
 }
 
-void Five::serialize(const std::string &filename) const {
+void Five::serialize(const std::string& filename) const {
     std::ofstream outFile(filename);
 
     if (!outFile.is_open()) {
@@ -241,7 +258,7 @@ void Five::serialize(const std::string &filename) const {
     outFile.close();
 }
 
-void Five::deserialize(const std::string &filename) {
+void Five::deserialize(const std::string& filename) {
     std::ifstream inFile(filename);
 
     if (!inFile.is_open()) {
@@ -290,7 +307,8 @@ Five::Builder Five::createBuilder() {
     return Builder();
 }
 
-Five::~Five() noexcept {
+Five::~Five()
+noexcept {
     std::cout << "destructor" << std::endl;
     if (_size > 0) {
         _size = 0;
@@ -301,13 +319,13 @@ Five::~Five() noexcept {
 
 Five::Builder::Builder() : _size(0), _values(nullptr) {}
 
-Five::Builder &Five::Builder::size(size_t size) {
+Five::Builder& Five::Builder::size(size_t size) {
     _size = size;
     _values = new unsigned char[size];
     return *this;
 }
 
-Five::Builder &Five::Builder::addValue(unsigned char value) {
+Five::Builder& Five::Builder::addValue(unsigned char value) {
     if (!isValidChar(value)) {
         throw std::invalid_argument("The class accepts fivefold numbers, between 0-4");
     }

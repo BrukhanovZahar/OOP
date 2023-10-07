@@ -12,34 +12,39 @@ public:
 
     Five();
 
-    Five(const size_t &n, unsigned char t = '0');
+    Five(const size_t& n, unsigned char t = '0');
 
-    Five(const std::initializer_list<unsigned char> &t);
+    Five(const std::initializer_list<unsigned char>& t);
 
-    Five(const std::string &t);
+    Five(const std::string& t);
 
-    Five(const Five &other);
+    Five(const Five& other);
 
-    Five(Five &&other) noexcept;
+    Five(Five&& other) noexcept;
 
+    // Предупреждает, что результат функции не должен быть проигнорирован
+    [[nodiscard]] size_t getSize() const;
 
-    Five operator+(const Five &other) const;
+    // Предупреждает, что результат функции не должен быть проигнорирован
+    [[nodiscard]] std::string getValue() const;
 
-    Five operator-(const Five &other) const;
+    Five operator+(const Five& other) const;
 
-    bool operator>(const Five &other) const;
+    Five operator-(const Five& other) const;
 
-    bool operator<(const Five &other) const;
+    bool operator>(const Five& other) const;
 
-    bool operator==(const Five &other) const;
+    bool operator<(const Five& other) const;
 
-    Five &operator=(const Five &other);
+    bool operator==(const Five& other) const;
 
-    friend std::ostream &operator<<(std::ostream &os, const Five &five);
+    Five& operator=(const Five& other);
 
-    void serialize(const std::string &filename) const;
+    friend std::ostream& operator<<(std::ostream& os, const Five& five);
 
-    void deserialize(const std::string &filename);
+    void serialize(const std::string& filename) const;
+
+    void deserialize(const std::string& filename);
 
     static Builder createBuilder();
 
@@ -51,6 +56,8 @@ private:
 
     static bool isValidChar(unsigned char c);
 
+    static unsigned char convertChar(const unsigned char c);
+
     void removeLeadingZeros();
 };
 
@@ -58,9 +65,9 @@ class Five::Builder {
 public:
     Builder();
 
-    Builder &size(size_t size);
+    Builder& size(size_t size);
 
-    Builder &addValue(unsigned char value);
+    Builder& addValue(unsigned char value);
 
     Five build() const;
 
