@@ -14,6 +14,8 @@ public:
 
     virtual Point getCenter() const = 0;
 
+    std::vector<Point> getPoints() const;
+
     friend std::ostream& operator<<(std::ostream& out, const Figure& figure);
 
     friend std::istream& operator>>(std::istream& input, Figure& figure);

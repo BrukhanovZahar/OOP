@@ -16,7 +16,7 @@ Point Pentagon::getCenter() const {
     double centerX = 0.0;
     double centerY = 0.0;
 
-    for (const Point& point : _points) {
+    for (const Point& point: _points) {
         centerX += point.getX();
         centerY += point.getY();
     }
@@ -28,8 +28,7 @@ Point Pentagon::getCenter() const {
 }
 
 Pentagon* Pentagon::createPentagon(const std::vector <Point>& points) {
-    if (points.size() != 5) {
-        throw std::invalid_argument("Pentagon must be created with exactly 5 points.");
-    }
+    PentagonValidator pentagonValidator;
+    FigureValidator::validateFigure(pentagonValidator, points);
     return new Pentagon(points);
 }

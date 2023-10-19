@@ -1,6 +1,8 @@
 #pragma once
 
 #include "figure.h"
+#include "FigureValidator.h"
+#include "PentagonValidator.h"
 
 class Pentagon : public Figure {
 public:

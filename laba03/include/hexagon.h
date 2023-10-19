@@ -1,6 +1,8 @@
 #pragma once
 
 #include "figure.h"
+#include "FigureValidator.h"
+#include "HexagonValidator.h"
 
 class Hexagon : public Figure {
 public:

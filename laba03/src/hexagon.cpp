@@ -16,7 +16,7 @@ Point Hexagon::getCenter() const {
     double centerX = 0.0;
     double centerY = 0.0;
 
-    for (const Point& point : _points) {
+    for (const Point& point: _points) {
         centerX += point.getX();
         centerY += point.getY();
     }
@@ -28,8 +28,7 @@ Point Hexagon::getCenter() const {
 }
 
 Hexagon* Hexagon::createHexagon(const std::vector <Point>& points) {
-    if (points.size() != 6) {
-        throw std::invalid_argument("Hexagon must be created with exactly 6 points.");
-    }
+    HexagonValidator hexagonValidator;
+    FigureValidator::validateFigure(hexagonValidator, points);
     return new Hexagon(points);
 }

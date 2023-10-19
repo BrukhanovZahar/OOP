@@ -16,7 +16,7 @@ Point Octagon::getCenter() const {
     double centerX = 0.0;
     double centerY = 0.0;
 
-    for (const Point& point : _points) {
+    for (const Point& point: _points) {
         centerX += point.getX();
         centerY += point.getY();
     }
@@ -28,8 +28,7 @@ Point Octagon::getCenter() const {
 }
 
 Octagon* Octagon::createOctagon(const std::vector <Point>& points) {
-    if (points.size() != 8) {
-        throw std::invalid_argument("Hexagon must be created with exactly 6 points.");
-    }
+    OctagonValidator octagonValidator;
+    FigureValidator::validateFigure(octagonValidator, points);
     return new Octagon(points);
 }
