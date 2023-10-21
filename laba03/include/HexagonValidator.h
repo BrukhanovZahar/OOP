@@ -4,5 +4,5 @@
 
 class HexagonValidator : public IFigureValidator {
 public:
-    void validate(std::vector<Point> points) override;
+    void validate(std::vector<Point>& points) const override;
 };

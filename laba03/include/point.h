@@ -5,6 +5,7 @@
 class Point {
 public:
     Point();
+    Point(const Point& other);
     Point(double x, double y);
 
     double getX() const;
@@ -12,7 +13,7 @@ public:
     double distanceBetweenPoints(const Point& other) const;
 
     Point& operator=(const Point& other);
-    Point& operator=(Point&& other);
+    Point& operator=(Point&& other) noexcept ;
     bool operator==(const Point& other) const;
 
     friend std::ostream& operator<<(std::ostream& out, const Point& point);

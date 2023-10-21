@@ -4,5 +4,5 @@ void FigureValidator::validateFigure(const IFigureValidator* validator, const st
     if (validator == nullptr) {
         throw std::invalid_argument("Invalid validator provided.");
     }
-    validator->validate(points);
+    validator->validate(const_cast<std::vector<Point>&>(points));
 }

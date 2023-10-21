@@ -11,6 +11,8 @@ static double getEPS() {
 
 Point::Point() : _x{0}, _y{0} {}
 
+Point::Point(const Point& other) : _x(other._x), _y(other._y) {}
+
 Point::Point(double x, double y) : _x{x}, _y{y} {}
 
 Point& Point::operator=(const Point& other) {
@@ -19,7 +21,7 @@ Point& Point::operator=(const Point& other) {
     return *this;
 }
 
-Point& Point::operator=(Point&& other) {
+Point& Point::operator=(Point&& other) noexcept {
     _x = other._x;
     _y = other._y;
     other._x = 0;
@@ -54,9 +56,9 @@ std::istream& operator>>(std::istream& input, Point& point) {
     return input;
 }
 
-static bool Point::areCollinear(const Point& point1, const Point& point2, const Point& point3) {
+bool Point::areCollinear(const Point& point1, const Point& point2, const Point& point3) {
     double slope1 = (point2._y - point1._y) / (point2._x - point1._x);
-    double slope2 = (point3._y - p2._y) / (point3._x - point2._x);
+    double slope2 = (point3._y - point2._y) / (point3._x - point2._x);
 
     return slope1 == slope2;
 }
