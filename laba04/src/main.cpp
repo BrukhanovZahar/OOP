@@ -2,6 +2,8 @@
 #include "../include/Figure.h"
 #include "../include/Pentagon.h"
 #include "../include/Hexagon.h"
+#include "../include/Octagon.h"
+#include "../include/Array.h"
 
 using namespace std;
 
@@ -13,42 +15,50 @@ int main() {
     std::vector<Point<double>> octagonPoints = {Point(0.0, 0.0), Point(3.0, 0.0), Point(4.0, 1.0), Point(4.0, 3.0),
                                                 Point(3.0, 4.0), Point(0.0, 4.0), Point(1.0, 3.0), Point(1.0, 1.0)};
 
-    Figure<double>* figure = Pentagon<double>().createFigureWithPoints(pentagonPoints);
-    cout << figure->area() << endl;
-    Figure<double>* figure2 = Hexagon<double>().createFigureWithPoints(hexagonPoints);
-    cout << figure2->area() << endl;
 
-//    Figure<double>* pentagon = Figure<double>::createFigureWithPoints(pentagonPoints);
-//    Figure<double>* hexagon = Figure<double>::createFigureWithPoints(hexagonPoints);
-//    Figure<double>* octagon = Figure<double>::createFigureWithPoints(octagonPoints);
+    shared_ptr<Figure<double>> pentagon = make_shared<Pentagon<double>>(pentagonPoints);
+//    cout << pentagon->area() << endl;
+    shared_ptr<Figure<double>> hexagon = make_shared<Hexagon<double>>(hexagonPoints);
+//    cout << hexagon->area() << endl;
+    shared_ptr<Figure<double>> octagon = make_shared<Octagon<double>>(octagonPoints);
+//    cout << octagon->area() << endl;
 
-//    if (pentagon && hexagon && octagon) {
-//        Figure<double>* figures[] = {pentagon, hexagon, octagon};
-//        int size = 3;
-//        for (auto& figure: figures) {
-//            std::cout << "Area: " << static_cast<double>(*figure) << std::endl;
-//            std::cout << "Center: " << static_cast<Point<double>>(figure->getCenter()) << std::endl;
-//        }
-//
-//        int index = 1;
-//        for (int i = 0; i < size; ++i) {
-//            if (i == index) {
-//                figures[i] = nullptr;
-//            } else if (i > index) {
-//                figures[i - 1] = figures[i];
-//                figures[i] = nullptr;
-//            }
-//        }
-//        size -= 1;
-//
-//        std::cout << "DELETE" << std::endl;
-//        for (auto& figure: figures) {
-//            std::cout << "Area: " << static_cast<double>(*figure) << std::endl;
-//            std::cout << "Center: " << static_cast<Point<double>>(figure->getCenter()) << std::endl;
-//        }
-//    } else {
-//        std::cout << "Failed to create one or more figures." << std::endl;
-//    }
+//    Figure<double>* pentagon = Pentagon<double>().createFigureWithPoints(pentagonPoints);
+//    cout << pentagon->area() << endl;
+//    Figure<double>* hexagon = Hexagon<double>().createFigureWithPoints(hexagonPoints);
+//    cout << hexagon->area() << endl;
+//    Figure<double>* octagon = Octagon<double>().createFigureWithPoints(octagonPoints);
+//    cout << octagon->area() << endl;
+
+    myArray<shared_ptr<Figure<double>>> array;
+
+    array.push_back(pentagon);
+    array.push_back(hexagon);
+    array.push_back(octagon);
+
+    for (shared_ptr<Figure<double>>& elem : array) {
+
+        cout << "Area: " << static_cast<double>(*elem) << endl;
+        cout << "Center: " << elem->getCenter() << endl;
+
+        for (Point<double> point : elem->getPoints()) {
+            cout << point << endl;
+        }
+
+    }
+
+    array.remove(1);
+
+    for (shared_ptr<Figure<double>>& elem : array) {
+
+        cout << "Area: " << static_cast<double>(*elem) << endl;
+        cout << "Center: " << elem->getCenter() << endl;
+
+        for (Point<double> point : elem->getPoints()) {
+            cout << point << endl;
+        }
+
+    }
 
 //    delete pentagon;
 //    delete hexagon;
