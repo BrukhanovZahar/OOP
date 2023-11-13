@@ -7,6 +7,8 @@
 template<ScalarType T>
 class Octagon : public Figure<T> {
 public:
+    Octagon() = default;
+
     Octagon(const std::vector<Point<T>>& points) : Figure<T>(points) {}
 
     Octagon<T>& operator=(const Figure <T>& other) override {

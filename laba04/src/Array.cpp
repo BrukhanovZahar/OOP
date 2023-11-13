@@ -1,10 +1,10 @@
 #include "../include/Array.h"
 
 template<typename T>
-Array<T>::Array() : _size{0}, _capacity{10}, _elems{new T[this->_capacity]} {}
+myArray<T>::myArray() : _size{0}, _capacity{10}, _elems{new T[this->_capacity]} {}
 
 template<typename T>
-Array<T>::Array(const Array& other) : _elems(nullptr), _size(0), _capacity(0) {
+myArray<T>::myArray(const myArray& other) : _elems(nullptr), _size(0), _capacity(0) {
     resize(other._capacity);
     for (int i{0}; i < other._size; ++i) {
         _elems[i] = other._elems[i];
@@ -13,14 +13,14 @@ Array<T>::Array(const Array& other) : _elems(nullptr), _size(0), _capacity(0) {
 }
 
 template<typename T>
-Array<T>::~Array() {
+myArray<T>::~myArray() {
     _size = 0;
     _capacity = 0;
     delete[] _elems;
 }
 
 template<typename T>
-Array<T>& Array<T>::operator=(const Array& other) {
+myArray<T>& myArray<T>::operator=(const myArray& other) {
     if (this != &other) {
 
         for (int i = 0; i < other._size; ++i) {
@@ -33,7 +33,7 @@ Array<T>& Array<T>::operator=(const Array& other) {
 }
 
 template<typename T>
-void Array<T>::push_back(const T figure) {
+void myArray<T>::push_back(const T figure) {
     if (_size == _capacity) {
         resize(_capacity * 2);
     }
@@ -42,7 +42,7 @@ void Array<T>::push_back(const T figure) {
 }
 
 template<typename T>
-void Array<T>::resize(int newCapacity) {
+void myArray<T>::resize(int newCapacity) {
 
     if (newCapacity <= 0) {
         newCapacity = 1;
@@ -61,12 +61,20 @@ void Array<T>::resize(int newCapacity) {
 }
 
 template<typename T>
-int Array<T>::length() const {
+int myArray<T>::length() const {
     return _size;
 }
 
 template<typename T>
-void Array<T>::remove(int index) {
+void myArray<T>::print() const {
+    for (int i{0}; i < _size; ++i) {
+        std::cout << _elems[i] << " ";
+    }
+    std::cout << std::endl;
+}
+
+template<typename T>
+void myArray<T>::remove(int index) {
     if (index >= 0 && index < _size) {
         for (int i{index}; i < _size - 1; ++i) {
             _elems[i] = _elems[i + 1];
@@ -76,10 +84,20 @@ void Array<T>::remove(int index) {
 }
 
 template<typename T>
-T Array<T>::operator[](int index) const {
+T myArray<T>::operator[](int index) const {
     if (index >= 0 && index < _size) {
         return _elems[index];
     } else {
         throw std::out_of_range("Index out of bounds");
     }
+}
+
+template<typename T>
+T* myArray<T>::begin() const {
+    return _elems;
+}
+
+template<typename T>
+T* myArray<T>::end() const {
+    return _elems + _size;
 }

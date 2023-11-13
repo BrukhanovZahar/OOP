@@ -1,19 +1,21 @@
 #pragma once
 
-#include "Figure.h"
-
 template<typename T>
-class Array {
+class myArray {
 public:
-    Array();
-    Array(const Array& other);
-    ~Array();
-    Array& operator=(const Array& other);
+    myArray();
+    myArray(const myArray& other);
+    ~myArray();
+    myArray& operator=(const myArray& other);
     void resize(int newCapacity);
     void push_back(const T figure);
     void remove(int index);
     int length() const;
+    void print() const;
     T operator[](int index) const;
+    T* begin() const;
+    T* end() const;
+
 private:
     T* _elems;
     int _size;
