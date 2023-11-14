@@ -16,11 +16,11 @@ int main() {
                                                 Point(3.0, 4.0), Point(0.0, 4.0), Point(1.0, 3.0), Point(1.0, 1.0)};
 
 
-    shared_ptr<Figure<double>> pentagon = make_shared<Pentagon<double>>(pentagonPoints);
+    const shared_ptr<Figure<double>> pentagon = make_shared<Pentagon<double>>(pentagonPoints);
 //    cout << pentagon->area() << endl;
-    shared_ptr<Figure<double>> hexagon = make_shared<Hexagon<double>>(hexagonPoints);
+    const shared_ptr<Figure<double>> hexagon = make_shared<Hexagon<double>>(hexagonPoints);
 //    cout << hexagon->area() << endl;
-    shared_ptr<Figure<double>> octagon = make_shared<Octagon<double>>(octagonPoints);
+    const shared_ptr<Figure<double>> octagon = make_shared<Octagon<double>>(octagonPoints);
 //    cout << octagon->area() << endl;
 
 //    Figure<double>* pentagon = Pentagon<double>().createFigureWithPoints(pentagonPoints);
@@ -36,6 +36,8 @@ int main() {
     array.push_back(hexagon);
     array.push_back(octagon);
 
+    array.print();
+
     for (shared_ptr<Figure<double>>& elem : array) {
 
         cout << "Area: " << static_cast<double>(*elem) << endl;
@@ -46,6 +48,8 @@ int main() {
         }
 
     }
+
+    cout << array.length() << endl;
 
     array.remove(1);
 
@@ -59,6 +63,8 @@ int main() {
         }
 
     }
+
+    cout << array.length() << endl;
 
 //    delete pentagon;
 //    delete hexagon;

@@ -9,7 +9,11 @@ class Octagon : public Figure<T> {
 public:
     Octagon() = default;
 
-    Octagon(const std::vector<Point<T>>& points) : Figure<T>(points) {}
+    Octagon(const std::vector<Point<T>>& points) : Figure<T>(points) {
+        OctagonValidator<T> octagonValidator;
+        FigureValidator<T>::validateFigure(static_cast<const IFigureValidator<T>*> (&octagonValidator), points);
+        this->_points = points;
+    }
 
     Octagon<T>& operator=(const Figure <T>& other) override {
         if (this != &other) {

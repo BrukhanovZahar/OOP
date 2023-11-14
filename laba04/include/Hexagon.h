@@ -9,7 +9,11 @@ class Hexagon : public Figure<T> {
 public:
     Hexagon() = default;
 
-    Hexagon(const std::vector<Point<T>>& points) : Figure<T>(points) {}
+    Hexagon(const std::vector<Point<T>>& points) {
+        HexagonValidator<T> hexagonValidator;
+        FigureValidator<T>::validateFigure(static_cast<const IFigureValidator<T>*>(&hexagonValidator), points);
+        this->_points = points;
+    }
 
     Hexagon<T>& operator=(const Figure<T>& other) override {
         if (this != &other) {

@@ -10,32 +10,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(task04
         src/main.cpp
-        src/Figure.cpp
-        src/Pentagon.cpp
-        src/Hexagon.cpp
-        src/Octagon.cpp
-        src/FigureValidator.cpp
-        src/HexagonValidator.cpp
-        src/IFigureValidator.cpp
-        src/OctagonValidator.cpp
-        src/PentagonValidator.cpp
-        src/Point.cpp
 )
 
-#enable_testing()
-#add_executable(tests04
-#        src/tests.cpp
-#        src/Figure.cpp
-#        src/Pentagon.cpp
-#        src/Hexagon.cpp
-#        src/Octagon.cpp
-#        src/FigureValidator.cpp
-#        src/HexagonValidator.cpp
-#        src/IFigureValidator.cpp
-#        src/OctagonValidator.cpp
-#        src/PentagonValidator.cpp
-#        src/Point.cpp
-#)
-#target_link_libraries(tests04 ${GTEST_LIBRARIES})
-#
-#add_test(NAME BASIC COMMAND tests04)
+enable_testing()
+add_executable(tests04
+        src/tests.cpp
+)
+target_link_libraries(tests04 ${GTEST_LIBRARIES})
+
+add_test(NAME BASIC COMMAND tests04)
