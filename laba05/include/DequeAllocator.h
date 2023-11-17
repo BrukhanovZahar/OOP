@@ -17,6 +17,10 @@ public:
     using pointer = T*;
     using const_pointer = const T*;
     using size_type = std::size_t;
+    using void_pointer = void *;
+    using const_void_pointer = const void *;
+    using reference_type = T &;
+    using const_reference_type = const T &;
 
     template<typename U>
     struct rebind {
