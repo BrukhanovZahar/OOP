@@ -36,12 +36,7 @@ public:
         std::copy(other.data, other.data + size, data);
     }
 
-    DynamicArray(DynamicArray&& other)
-
-    noexcept: data(other.data), capacity(other
-                                                 .capacity),
-              size(other
-                           .size) {
+    DynamicArray(DynamicArray&& other) noexcept: data(other.data), capacity(other.capacity), size(other.size) {
         other.data = nullptr;
         other.capacity = 0;
         other.size = 0;
