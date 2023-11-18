@@ -12,20 +12,10 @@ add_executable(task05
         src/main.cpp
 )
 
-#enable_testing()
-#add_executable(tests05
-#        src/tests.cpp
-#        src/figure.cpp
-#        src/pentagon.cpp
-#        src/hexagon.cpp
-#        src/octagon.cpp
-#        src/FigureValidator.cpp
-#        src/HexagonValidator.cpp
-#        src/IFigureValidator.cpp
-#        src/OctagonValidator.cpp
-#        src/PentagonValidator.cpp
-#        src/point.cpp
-#)
-#target_link_libraries(tests05 ${GTEST_LIBRARIES})
-#
-#add_test(NAME BASIC COMMAND tests05)
+enable_testing()
+add_executable(tests05
+        src/tests.cpp
+)
+target_link_libraries(tests05 ${GTEST_LIBRARIES})
+
+add_test(NAME BASIC COMMAND tests05)
