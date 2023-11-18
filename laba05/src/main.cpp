@@ -18,13 +18,13 @@ int main() {
         std::cout << elem.first << ' ' << elem.second << std::endl;
     }
 
-    DynamicArray<int, DequeAllocator<int>> deque;
+    DynamicArray<int, DequeAllocator<int>> dynamicArray;
 
     for (int i{0}; i < 10; ++i) {
-        deque.push_back(factorial(i));
+        dynamicArray.push_back(factorial(i));
     }
 
-    for (int elem: deque) {
+    for (int elem: dynamicArray) {
         std::cout << elem << " ";
     }
 
