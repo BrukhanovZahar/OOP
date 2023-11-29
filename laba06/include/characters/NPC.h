@@ -3,6 +3,13 @@
 #include <string>
 #include <memory>
 #include <iostream>
+#include <stdexcept>
+
+enum class NPCType {
+    Bear,
+    Elf,
+    Rogue
+};
 
 struct Coordinates {
     int x;
