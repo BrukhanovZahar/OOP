@@ -8,18 +8,16 @@ public:
     Bear(const std::string& name, const Coordinates& coords) : NPC(name, coords) {}
 
     void attack(NPC* target) override {
-        std::cout << "Bear " << name << " is attacking ";
-
         if (dynamic_cast<Elf*>(target) != nullptr) {
-            std::cout << "and kill Elf " << target->getName() << "!" << std::endl;
+            notifyObservers(name + " is attacking and kill " + target->getName() + "!");
             delete target;
         } else {
-            std::cout << target->getName();
+            notifyObservers(name + " is attacking " + target->getName());
             target->defend();
         }
     }
 
     void defend() override {
-        std::cout << " and Bear is defending." << std::endl;
+        notifyObservers("and " + name + " is defending.");
     }
 };

@@ -7,19 +7,17 @@ public:
     Rogue(const std::string& name, const Coordinates& coords) : NPC(name, coords) {}
 
     void attack(NPC* target) override {
-        std::cout << "Rogue " << name << " is attacking ";
-
         if (dynamic_cast<Rogue*>(target) != nullptr) {
-            std::cout << "and kill Rogue " << target->getName() << "!" << std::endl;
+            notifyObservers(name + " is attacking and kill " + target->getName() + "!");
             delete target;
         } else {
-            std::cout << target->getName();
+            notifyObservers(name + " is attacking " + target->getName());
             target->defend();
         }
     }
 
     void defend() override {
-        std::cout << " and Rogue is defending" << std::endl;
+        notifyObservers("and " + name + " is defending.");
     }
 
 };
