@@ -7,6 +7,8 @@
 #include "../observers/ConsoleObserver.h"
 #include "../observers/FileObserver.h"
 
+class Visitor;
+
 enum class NPCType {
     Bear,
     Elf,
@@ -31,6 +33,8 @@ public:
     virtual void attack(NPC* target) = 0;
 
     virtual void defend() = 0;
+
+    virtual void accept(Visitor& visitor) = 0;
 
     const std::string& getName() const { return name; }
 
