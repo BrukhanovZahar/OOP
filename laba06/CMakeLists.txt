@@ -8,8 +8,11 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra")
 
-add_executable(task05
+add_executable(task06
         src/main.cpp
+        src/characters/Bear.cpp
+        src/characters/Elf.cpp
+        src/characters/Rogue.cpp
 )
 #
 #enable_testing()
