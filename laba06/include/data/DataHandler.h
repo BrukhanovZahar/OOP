@@ -6,7 +6,7 @@
 
 class DataHandler {
 public:
-    static void serializqToFile(const std::vector<NPC*>& characters, const std::string& filename) {
+    static void serializeToFile(const std::vector<NPC*>& characters, const std::string& filename) {
         Json::Value root;
 
         for (const auto& character: characters) {
