@@ -40,6 +40,8 @@ public:
 
     const Coordinates& getCoordinates() const { return coordinates; }
 
+    virtual std::string getType() const = 0;
+
     virtual void printInfo() const {
         std::cout << "Type: " << getType() << ", Name: " << name
                   << ", Coordinates: (" << coordinates.x << ", " << coordinates.y << ")" << std::endl;
@@ -62,8 +64,6 @@ protected:
             observer->update(message);
         }
     }
-
-    virtual std::string getType() const = 0;
 
     std::string name;
     Coordinates coordinates;
