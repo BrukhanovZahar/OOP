@@ -1,10 +1,6 @@
 #include "../include/characters/NPC.h"
-#include "../include/characters/Bear.h"
-#include "../include/characters/Elf.h"
-#include "../include/characters/Rogue.h"
 #include "../include/characters/NPCFactory.h"
-#include "../include/visitor/BattleVisitor.h"
-
+#include "../include/battle/BattleManager.h"
 int main() {
 
     ConsoleObserver consoleObserver;
@@ -24,25 +20,14 @@ int main() {
     for (NPC* character: characters) {
         character->addObserver(&consoleObserver);
         character->addObserver(&fileObserver);
+
+        character->printInfo();
     }
 
-    BattleVisitor battleVisitor(200, characters);
-
-    auto person = characters.begin();
-    while (person != characters.end()) {
-        NPC* target = *person;
-        target->accept(battleVisitor);
-        ++person;
-    }
+    BattleManager::startBattle(characters, 200);
 
     for (NPC* character: characters) {
-        std::cout << "Person name: " << character->getName() << std::endl;
-    }
-
-    for (NPC* character: characters) {
-        if (character) {
-            delete character;
-        }
+        delete character;
     }
 
     return 0;
