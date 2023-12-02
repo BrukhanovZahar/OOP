@@ -31,4 +31,8 @@ add_executable(tests06
 )
 target_link_libraries(tests06 ${GTEST_LIBRARIES})
 
+target_include_directories(tests06 PRIVATE ${JSONCPP_INCLUDE_DIRS})
+target_link_directories(tests06 PRIVATE ${JSONCPP_LIB_DIRS})
+target_link_libraries(tests06 jsoncpp)
+
 add_test(NAME BASIC COMMAND tests05)
