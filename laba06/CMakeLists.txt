@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.25)
 project(lab06)
 
+set(JSONCPP_INCLUDE_DIRS "/opt/homebrew/Cellar/jsoncpp/1.9.5/include")
+set(JSONCPP_LIB_DIRS "/opt/homebrew/Cellar/jsoncpp/1.9.5/lib")
+
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
@@ -14,7 +17,11 @@ add_executable(task06
         src/characters/Elf.cpp
         src/characters/Rogue.cpp
 )
-#
+
+target_include_directories(task06 PRIVATE ${JSONCPP_INCLUDE_DIRS})
+target_link_directories(task06 PRIVATE ${JSONCPP_LIB_DIRS})
+target_link_libraries(task06 jsoncpp)
+
 #enable_testing()
 #add_executable(tests05
 #        src/tests.cpp
