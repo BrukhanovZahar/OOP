@@ -18,3 +18,7 @@ void Bear::defend() {
 void Bear::accept(Visitor& visitor) {
     visitor.visit(*this);
 }
+
+std::string Bear::getType() const {
+    return "Bear";
+}

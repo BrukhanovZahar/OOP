@@ -18,3 +18,7 @@ void Elf::defend() {
 void Elf::accept(Visitor& visitor) {
     visitor.visit(*this);
 }
+
+std::string Elf::getType() const {
+return "Elf";
+}

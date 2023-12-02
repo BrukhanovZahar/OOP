@@ -12,4 +12,6 @@ public:
     void defend() override;
 
     void accept(Visitor& visitor) override;
+
+    std::string getType() const override;
 };

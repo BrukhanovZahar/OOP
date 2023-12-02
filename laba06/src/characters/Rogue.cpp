@@ -18,3 +18,7 @@ void Rogue::defend() {
 void Rogue::accept(Visitor& visitor) {
     visitor.visit(*this);
 }
+
+std::string Rogue::getType() const {
+return "Rogue";
+}
