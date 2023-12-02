@@ -22,10 +22,13 @@ target_include_directories(task06 PRIVATE ${JSONCPP_INCLUDE_DIRS})
 target_link_directories(task06 PRIVATE ${JSONCPP_LIB_DIRS})
 target_link_libraries(task06 jsoncpp)
 
-#enable_testing()
-#add_executable(tests05
-#        src/tests.cpp
-#)
-#target_link_libraries(tests05 ${GTEST_LIBRARIES})
-#
-#add_test(NAME BASIC COMMAND tests05)
+enable_testing()
+add_executable(tests06
+        src/tests.cpp
+        src/characters/Bear.cpp
+        src/characters/Elf.cpp
+        src/characters/Rogue.cpp
+)
+target_link_libraries(tests06 ${GTEST_LIBRARIES})
+
+add_test(NAME BASIC COMMAND tests05)
