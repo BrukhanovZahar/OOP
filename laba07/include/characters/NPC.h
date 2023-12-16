@@ -33,6 +33,8 @@ public:
 
     virtual void attack(NPC* target) = 0;
 
+    virtual bool canKill(NPC* target) = 0;
+
     virtual void defend() = 0;
 
     virtual void accept(Visitor& visitor) = 0;
@@ -62,6 +64,30 @@ public:
 
         coordinates.x = (coordinates.x + shiftX + maxX) % maxX;
         coordinates.y = (coordinates.y + shiftY + maxY) % maxY;
+    }
+
+    void must_die() {
+        std::lock_guard<std::mutex> lck(mutex);
+        alive = false;
+    }
+
+    bool isClose(const NPC* other) const {
+        if (!other) {
+            return false;
+        }
+
+        std::lock_guard<std::mutex> lock(mutex);
+
+        int myX = coordinates.x;
+        int myY = coordinates.y;
+        int otherX = other->getCoordinates().x;
+        int otherY = other->getCoordinates().y;
+
+        if ((std::pow(abs(myX - otherX), 2) + std::pow(abs(myY - otherY), 2)) <= std::pow(attackDistance, 2)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     virtual std::string getType() const = 0;
@@ -96,7 +122,7 @@ protected:
     std::string name;
     Coordinates coordinates;
     bool alive = true;
-    int moveDistance;
+    int moveDistance, attackDistance;
     mutable std::mutex mutex;
     std::vector<Observer*> observers;
 };
