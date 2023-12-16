@@ -79,11 +79,11 @@ TEST(NPCFightTest, ElfRogueNPC) {
     Coordinates coordinateRogue = rogue->getCoordinates();
 
     EXPECT_EQ(nameElf, nameForElf);
-    EXPECT_EQ(nameRogue, "");
+    EXPECT_EQ(nameRogue, nameForRogue);
     EXPECT_EQ(coordinateElf.x, 10);
     EXPECT_EQ(coordinateElf.y, 10);
-    EXPECT_EQ(coordinateRogue.x, 0);
-    EXPECT_EQ(coordinateRogue.y, 0);
+    EXPECT_EQ(coordinateRogue.x, 12);
+    EXPECT_EQ(coordinateRogue.y, 12);
 }
 
 TEST(NPCFightTest, ElfBearNPC) {
@@ -99,10 +99,10 @@ TEST(NPCFightTest, ElfBearNPC) {
     Coordinates coordinateElf = elf->getCoordinates();
     Coordinates coordinateRogue = bear->getCoordinates();
 
-    EXPECT_EQ(nameElf, "");
+    EXPECT_EQ(nameElf, nameForElf);
     EXPECT_EQ(nameBear, nameForBear);
-    EXPECT_EQ(coordinateElf.x, 0);
-    EXPECT_EQ(coordinateElf.y, 0);
+    EXPECT_EQ(coordinateElf.x, 10);
+    EXPECT_EQ(coordinateElf.y, 10);
     EXPECT_EQ(coordinateRogue.x, 12);
     EXPECT_EQ(coordinateRogue.y, 12);
 }
