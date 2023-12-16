@@ -1,46 +1,33 @@
 #pragma once
 
+#include <queue>
+#include <random>
+#include <thread>
 #include "../characters/NPC.h"
 #include "../visitor/BattleVisitor.h"
 
 class BattleManager {
 public:
-    static void startBattle(std::vector<NPC*>& characters, int battleRadius) {
-        BattleVisitor battleVisitor(battleRadius, characters);
 
-        printMessage("Start battle.");
-
-        auto person = characters.begin();
-        while (person != characters.end()) {
-            NPC* target = *person;
-            target->accept(battleVisitor);
-            ++person;
-        }
-
-        printMessage("Info after battle:");
-
-        for (NPC* character: characters) {
-            character->printInfo();
-        }
-
-        printMessage("End battle.");
+    static BattleManager& get() {
+        static BattleManager instance;
+        return instance;
     }
+
+    void addEvent(std::pair<NPC*, NPC*> event) {
+        std::lock_guard<std::mutex> lock(mutex);
+        events.push(event);
+    }
+
+    virtual void operator()();
+
 
 private:
-    static void printMessage(const std::string& message) {
-        std::cout << "\033[32m";
 
-        for (int i = 0; i < 80; ++i) {
-            std::cout << "-";
-        }
-        std::cout << std::endl;
 
-        std::cout << message << std::endl;
+    BattleManager() {}
 
-        for (int i = 0; i < 80; ++i) {
-            std::cout << "-";
-        }
-
-        std::cout << "\033[0m" << std::endl;
-    }
+    std::random_device rd;
+    std::queue<std::pair<NPC*, NPC*>> events;
+    std::mutex mutex;
 };
