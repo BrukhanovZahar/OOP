@@ -1,6 +1,5 @@
 #include "../include/characters/NPCFactory.h"
-//#include "../include/battle/BattleManager.h"
-//#include "../include/data/DataHandler.h"
+#include "../include/battle/BattleManager.h"
 #include <thread>
 #include <set>
 #include <string>
@@ -21,7 +20,7 @@ sf::Texture backgroundTexture;
 void loadTextures() {
     textures["Elf"].loadFromFile("/Users/br_zahar/CLionProjects/MAI/OOP/laba07/datasets/elf02.png");
     textures["Rogue"].loadFromFile("/Users/br_zahar/CLionProjects/MAI/OOP/laba07/datasets/rogue02.png");
-    textures["Bear"].loadFromFile("/Users/br_zahar/CLionProjects/MAI/OOP/laba07/datasets/bear04.png");
+    textures["Bear"].loadFromFile("/Users/br_zahar/CLionProjects/MAI/OOP/laba07/datasets/bear05.png");
 }
 
 void drawField(sf::RenderWindow& window) {
@@ -42,16 +41,11 @@ void drawField(sf::RenderWindow& window) {
             }
         }
 
-        // Очистка окна
         window.clear();
 
         window.draw(backgroundSprite);
         window.draw(overlay);
 
-        // Захватываем мьютекс перед обращением к characters
-//        std::lock_guard<std::mutex> lock(charactersMutex);
-
-        // Отрисовка каждого персонажа
         for (const NPC* character: characters) {
             if (character->isAlive()) {
                 sf::Sprite sprite;
@@ -59,12 +53,10 @@ void drawField(sf::RenderWindow& window) {
                 sprite.setScale(0.07, 0.07);
                 sprite.setPosition(character->getCoordinates().x, character->getCoordinates().y);
 
-                // Отрисовка персонажа
                 window.draw(sprite);
             }
         }
 
-        // Отображение всего, что было отрисовано
         window.display();
     }
 }
@@ -95,15 +87,48 @@ void generateCharacters(std::mt19937& gen, const int countCharacters) {
         int x = distX(gen);
         int y = distY(gen);
 
-        // Захватываем мьютекс перед обращением к characters
         std::lock_guard<std::mutex> lock(charactersMutex);
         characters.push_back(NPCFactory::createNPC(type, name, Coordinates(x, y)));
+    }
+}
+
+void BattleManager::operator()() {
+    std::mt19937 gen(rd());
+    while (isRunning || !events.empty()) {
+        {
+            std::optional<std::pair<NPC*, NPC*>> event;
+
+            {
+                std::lock_guard<std::mutex> lock(mutex);
+                if (!events.empty()) {
+                    event = events.back();
+                    events.pop();
+                }
+            }
+
+            if (event) {
+                NPC* attacker = event->first;
+                NPC* defender = event->second;
+
+                if (attacker->isAlive() && defender->isAlive()) {
+                    std::uniform_int_distribution<int> chance(1, 6);
+                    int attackPower = chance(gen);
+                    int defenderPower = chance(gen);
+
+                    if (attackPower > defenderPower) {
+                        attacker->attack(defender);
+                    }
+                }
+            }
+        }
     }
 }
 
 
 void moveCharacters(std::mt19937& gen, int maxX, int maxY, int duration) {
     int counterTime = 0;
+    isRunning = true;
+
     while (counterTime < duration) {
         for (NPC* npc: characters) {
             if (npc->isAlive()) {
@@ -115,12 +140,16 @@ void moveCharacters(std::mt19937& gen, int maxX, int maxY, int duration) {
             }
         }
 
+        for (NPC* npc: characters) {
+            for (NPC* other: characters) {
+                if (other != npc && npc->isAlive() && other->isAlive() && npc->isClose(other) && npc->canKill(other)) {
+                    BattleManager::get().addEvent({npc, other});
+                }
+            }
+        }
+
         ++counterTime;
         std::cout << counterTime << std::endl;
-//        std::lock_guard<std::mutex> lock(charactersMutex);
-        for (NPC* character: characters) {
-            character->printInfo();
-        }
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
@@ -139,23 +168,27 @@ int main() {
     ConsoleObserver consoleObserver;
     FileObserver fileObserver;
 
-//    characters.push_back(NPCFactory::createNPC(NPCType::Elf, "Elf1", Coordinates(10, 10)));
-//    characters.push_back(NPCFactory::createNPC(NPCType::Rogue, "Rogue1", Coordinates(990, 4)));
-//    characters.push_back(NPCFactory::createNPC(NPCType::Bear, "Bear1", Coordinates(999, 999)));
-//    characters.push_back(NPCFactory::createNPC(NPCType::Bear, "Bear2", Coordinates(301, 101)));
-//    characters.push_back(NPCFactory::createNPC(NPCType::Elf, "Elf2", Coordinates(201, 201)));
-//    characters.push_back(NPCFactory::createNPC(NPCType::Rogue, "Rogue2", Coordinates(401, 301)));
-//    characters.push_back(NPCFactory::createNPC(NPCType::Rogue, "Rogue3", Coordinates(460, 400)));
-
     generateCharacters(gen, 50);
 
+    for (NPC* character: characters) {
+        character->addObserver(&consoleObserver);
+        character->addObserver(&fileObserver);
+    }
+
+    std::thread battleThread(std::ref(BattleManager::get()));
     std::thread moveThread(moveCharacters, std::ref(gen), X, Y, 30);
     drawField(window);
     moveThread.join();
+    battleThread.join();
 
+    int countDied = 0;
     for (NPC* character: characters) {
+        character->printInfo();
+        if (!character->isAlive()){
+            ++countDied;
+        }
         delete character;
     }
-
+    std::cout << "Number of dead: " <<  countDied << std::endl;
     return 0;
 }
